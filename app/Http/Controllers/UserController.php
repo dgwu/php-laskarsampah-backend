@@ -27,4 +27,27 @@ class UserController extends Controller
 
         return $this->reply($result, $errorCode, $errorMessage);
     }
+
+    public function getProfile(Request $request) {
+        $errorCode = 403;
+        $result = null;
+        $errorMessage = '';
+
+        if (!empty($request->api_token)) {
+            $isUserExists = User::select('id', 'nama', 'telepon', 'alamat')
+                ->where('api_token', $request->api_token)
+                ->first();
+
+            if (!empty($isUserExists)) {
+                $errorCode = 200;
+                $result['user'] = $isUserExists;
+            } else {
+                $errorMessage = "Unauthorized access.";
+            }
+        } else {
+            $errorMessage = "Unauthorized access.";
+        }
+
+        return $this->reply($result, $errorCode, $errorMessage);
+    }
 }
