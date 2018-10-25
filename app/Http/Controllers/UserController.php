@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use \App\User;
-use Hash;
+use Illuminate\Support\Facades\Hash;
 use Validator;
 
 class UserController extends Controller
@@ -15,15 +15,19 @@ class UserController extends Controller
         $errorMessage = '';
 
         $user = User::where('telepon', $request->phone)
-            ->where('password', $request->password)
             ->first();
 
         if (!empty($user)) {
-            $errorCode = 200;
-            $generatedToken = str_random(20);
-            $user->api_token = $generatedToken;
-            $user->save();
-            $result['api_token'] = $generatedToken;
+            if (Hash::check($request->password, $user->password)) {
+                $errorCode = 200;
+                $generatedToken = str_random(20);
+                $user->api_token = $generatedToken;
+                $user->save();
+                $result['api_token'] = $generatedToken;
+            } else {
+                $errorMessage = 'Wrong credentials.';
+            }
+            
         } else {
             $errorMessage = 'Wrong credentials.';
         }
@@ -63,7 +67,7 @@ class UserController extends Controller
         $validator = Validator::make($request->all(), [
             'nama' => 'required|string|min:3',
             'email'=> 'nullable|email|unique:m_users,email',
-            'telepon' => 'required|min:5',
+            'telepon' => 'required|min:5|unique:m_users,telepon',
             'password' => 'required|string|min:3'
         ]);
 
@@ -73,7 +77,7 @@ class UserController extends Controller
                 $newUser->nama = $request->nama;
                 $newUser->email = $request->email;
                 $newUser->telepon = $request->telepon;
-                $newUser->password = $request->password;
+                $newUser->password = Hash::make($request->password);
 
                 $generatedToken = str_random(20);
                 $newUser->api_token = $generatedToken;
