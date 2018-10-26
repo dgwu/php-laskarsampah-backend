@@ -19,4 +19,11 @@ $router->post('/register', 'UserController@register');
 $router->post('/login', 'UserController@login');
 $router->post('/getuserprofile', 'UserController@getProfile');
 
+$router->post('/getWasteBank','UserController@getWasteBank');
+$router->post('/getWasteBankBy','UserController@getWasteBankBy');
+
+$router->post('/getNews','UserController@getNews');
+$router->post('/getNewsBy','UserController@getNewsBy');
+
+
 $router->get('/pricelist', 'WasteController@pricelist');

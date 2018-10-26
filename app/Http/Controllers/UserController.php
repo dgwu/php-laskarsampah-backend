@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use \App\User;
+use \App\WasteBank;
+use \App\News;
 use Illuminate\Support\Facades\Hash;
 use Validator;
 
@@ -57,6 +59,97 @@ class UserController extends Controller
 
         return $this->reply($result, $errorCode, $errorMessage);
     }
+
+
+    //MARK : Okky = Buat Dapetin list Bank sampah  By ID
+    public function getWasteBankBy(Request $request) {
+        $errorCode = 403;
+        $result = null;
+        $errorMessage = '';
+
+        if (!empty($request->id)) {
+            $bankS = WasteBank::select('id', 'namaBank', 'alamat', 'longtitude', 'latitude', 'namaAdmin','telepon','status')
+                ->where('id', $request->id)
+                ->first();
+
+            if (!empty($bankS)) {
+                $errorCode = 200;
+                $result['WasteBank'] = $bankS;
+            } else {
+                $errorMessage = "Unauthorized access.";
+            }
+        } else {
+            $errorMessage = "Unauthorized access.";
+        }
+
+        return $this->reply($result, $errorCode, $errorMessage);
+    }
+
+    //MARK : Okky = Buat Dapetin list Bank sampah
+    public function getWasteBank() {
+        $errorCode = 403;
+        $result = null;
+        $errorMessage = '';
+
+        $banklist = WasteBank:: select('id', 'namaBank', 'alamat', 'longtitude', 'latitude', 'namaAdmin','telepon','status')
+                ->get();
+    
+        if ($banklist->isNotEmpty()) {
+            $errorCode = 200;
+            $result['bank'] = $banklist;
+        } else {
+            $errorMessage = 'Empty.';
+        }
+
+        return $this->reply($result, $errorCode, $errorMessage);
+    }
+
+    //MARK : Okky = Buat Dapetin all list News
+    public function getNews() {
+        $errorCode = 403;
+        $result = null;
+        $errorMessage = '';
+
+        $newslist = News:: select('id', 'judul', 'tanggal', 'content', 'url', 'like','status','createBy')
+                ->get();
+    
+        if ($newslist->isNotEmpty()) {
+            $errorCode = 200;
+            $result['news'] = $newslist;
+        } else {
+            $errorMessage = 'Empty.';
+        }
+
+        return $this->reply($result, $errorCode, $errorMessage);
+    }
+
+
+     //MARK : Okky = Buat Dapetin all list News
+    public function getNewsBy(Request $request) {
+        $errorCode = 403;
+        $result = null;
+        $errorMessage = '';
+        
+        if (!empty($request->id)) {
+            $News = News::select('id', 'judul', 'tanggal', 'content', 'url', 'like','status','createBy')
+                ->where('id', $request->id)
+                ->first();
+
+            if (!empty($News)) {
+                $errorCode = 200;
+                $result['news'] = $News;
+            } else {
+                $errorMessage = "Unauthorized access.";
+            }
+        } else {
+            $errorMessage = "Unauthorized access.";
+        }
+
+
+        return $this->reply($result, $errorCode, $errorMessage);
+    }
+
+
 
     public function register(Request $request) {
         // nama, email, telepon, password
