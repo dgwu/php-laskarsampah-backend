@@ -11,7 +11,7 @@ class WasteController extends Controller
         $errorMessage = '';
 
         $pricelist = DB::table('m_priceListItem')
-            ->select('id', 'item_name', 'item_unit', 'item_poin')
+            ->select('id', 'item_name', 'item_unit', 'item_poin', 'item_price')
             ->get();
 
         if ($pricelist->isNotEmpty()) {
