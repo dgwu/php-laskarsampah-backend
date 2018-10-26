@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
-use \App\Http\Models\Admin\User;
+use \App\Http\Models\Admin\Admin;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use App\Http\Controllers\Controller;
@@ -44,8 +44,56 @@ class AdminController extends Controller
         return $this->reply($result, $errorCode, $errorMessage);
     }
 
+    public function checkCustomerQR(Request $request) {
+        $errorCode = 403;
+        $result = null;
+        $errorMessage = '';
+
+        if (!empty($request->email)) {
+            $isUserExists = User::select('id', 'nama', 'telepon', 'alamat')
+                ->where('email', $request->email)
+                ->first();
+
+            if (!empty($isUserExists)) {
+                $errorCode = 200;
+                $result['customer'] = $isUserExists;
+            } else {
+                $errorCode = 404;
+                $errorMessage = "User not Found";
+            }
+        } else {
+            $errorMessage = "Unauthorized access";
+        }
+
+        return $this->reply($result, $errorCode, $errorMessage);
+    }
+
+    public function getProfile(Request $request) {
+        $errorCode = 403;
+        $result = null;
+        $errorMessage = '';
+
+        if (!empty($request->api_token)) {
+            $isUserExists = Admin::select('id', 'nama', 'telepon', 'alamat', 'longitude','latitude', 'api_token')
+                ->where('api_token', $request->api_token)
+                ->first();
+
+            if (!empty($isUserExists)) {
+                $errorCode = 200;
+                $result['admin'] = $isUserExists;
+            } else {
+                $errorCode = 404;
+                $errorMessage = "Admin not Found";
+            }
+        } else {
+            $errorMessage = "Unauthorized access";
+        }
+
+        return $this->reply($result, $errorCode, $errorMessage);
+    }
+
     private function checkUser($phone) {
-        return User::where('telepon', $phone)->first();
+        return Admin::where('telepon', $phone)->first();
     }
 
     private function isValidPassword($inputPassword, $password) {
@@ -53,7 +101,7 @@ class AdminController extends Controller
     }
 
     private function updateUserToken($id, $token) {
-        return User::where('id', $id)->update(array('api_token' => $token));
+        return Admin::where('id', $id)->update(array('api_token' => $token));
     }
 
 }
