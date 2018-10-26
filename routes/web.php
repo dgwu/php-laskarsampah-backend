@@ -15,5 +15,8 @@
 $router->get('/', function () use ($router) {
     return $router->app->version();
 });
+$router->post('/register', 'UserController@register');
 $router->post('/login', 'UserController@login');
 $router->post('/getuserprofile', 'UserController@getProfile');
+
+$router->get('/pricelist', 'WasteController@pricelist');
