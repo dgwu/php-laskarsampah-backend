@@ -20,4 +20,10 @@ $router->post('/login', 'UserController@login');
 $router->post('/getuserprofile', 'UserController@getProfile');
 $router->post('/admin/login', 'Admin\AdminController@login');
 
+$router->post('/getWasteBank','UserController@getWasteBank');
+$router->post('/getWasteBankBy','UserController@getWasteBankBy');
+
+$router->post('/getNews','UserController@getNews');
+$router->post('/getNewsBy','UserController@getNewsBy');
+
 $router->get('/pricelist', 'WasteController@pricelist');
