@@ -18,3 +18,7 @@ $router->get('/', function () use ($router) {
 $router->post('/login', 'UserController@login');
 $router->post('/getuserprofile', 'UserController@getProfile');
 $router->post('/admin/login', 'Admin\AdminController@login');
+$router->post('/admin/stock/input', 'Admin\StockController@inputStock');
+$router->post('/admin/history', 'Admin\StockController@getAdminHistory');
+$router->post('/admin/history/detail', 'Admin\StockController@getTransactionDetail');
+
