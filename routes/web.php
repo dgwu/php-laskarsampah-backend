@@ -15,10 +15,19 @@
 $router->get('/', function () use ($router) {
     return $router->app->version();
 });
+$router->post('/register', 'UserController@register');
 $router->post('/login', 'UserController@login');
 $router->post('/getuserprofile', 'UserController@getProfile');
 $router->post('/admin/login', 'Admin\AdminController@login');
+
 $router->post('/admin/stock/input', 'Admin\StockController@inputStock');
 $router->post('/admin/history', 'Admin\StockController@getAdminHistory');
 $router->post('/admin/history/detail', 'Admin\StockController@getTransactionDetail');
 
+$router->post('/getWasteBank','UserController@getWasteBank');
+$router->post('/getWasteBankBy','UserController@getWasteBankBy');
+
+$router->post('/getNews','UserController@getNews');
+$router->post('/getNewsBy','UserController@getNewsBy');
+
+$router->get('/pricelist', 'WasteController@pricelist');
