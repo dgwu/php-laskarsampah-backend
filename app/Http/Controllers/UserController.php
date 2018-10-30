@@ -68,8 +68,21 @@ class UserController extends Controller
         $errorMessage = '';
 
         if (!empty($request->id)) {
-            $bankS = WasteBank::select('id', 'namaBank', 'alamat', 'longtitude', 'latitude', 'namaAdmin','telepon','status')
+            $bankS = WasteBank::select('id', 'namaBank', 'alamat', 'longitude', 'latitude', 'namaAdmin','status',
+                \DB::raw('CONCAT(""", telepon, """) as telepon'), \DB::raw('
+                (
+                   6371 *
+                   acos(cos(radians('.($request->latitude ?? 0).')) * 
+                   cos(radians(latitude)) * 
+                   cos(radians(longitude) - 
+                   radians('.($request->longitude ?? 0).')) + 
+                   sin(radians('.($request->latitude ?? 0).')) * 
+                   sin(radians(latitude )))
+                ) AS distance 
+                '))
                 ->where('id', $request->id)
+                ->having('distance', '<', 30) // in km
+                ->orderBy('distance', 'asc')
                 ->first();
 
             if (!empty($bankS)) {
@@ -86,13 +99,26 @@ class UserController extends Controller
     }
 
     //MARK : Okky = Buat Dapetin list Bank sampah
-    public function getWasteBank() {
+    public function getWasteBank(Request $request) {
         $errorCode = 403;
         $result = null;
         $errorMessage = '';
 
-        $banklist = WasteBank:: select('id', 'namaBank', 'alamat', 'longtitude', 'latitude', 'namaAdmin','telepon','status')
-                ->get();
+        $banklist = WasteBank:: select('id', 'namaBank', 'alamat', 'longitude', 'latitude', 'namaAdmin','status',
+            \DB::raw('CONCAT("\"",telepon,"\"") as telepon'), \DB::raw('
+                (
+                   6371 *
+                   acos(cos(radians('.($request->latitude ?? 0).')) * 
+                   cos(radians(latitude)) * 
+                   cos(radians(longitude) - 
+                   radians('.($request->longitude ?? 0).')) + 
+                   sin(radians('.($request->latitude ?? 0).')) * 
+                   sin(radians(latitude )))
+                ) AS distance 
+                '))
+            ->having('distance', '<', 30) // in km
+            ->orderBy('distance', 'asc')
+            ->get();
     
         if ($banklist->isNotEmpty()) {
             $errorCode = 200;
