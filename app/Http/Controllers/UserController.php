@@ -44,7 +44,8 @@ class UserController extends Controller
         $errorMessage = '';
 
         if (!empty($request->api_token)) {
-            $isUserExists = User::where('api_token', $request->api_token)
+            $isUserExists = User::select('id', 'nama', 'alamat', 'email', 'status', \DB::raw('CONCAT(""", telepon, """) as telepon'), 'api_token')
+                ->where('api_token', $request->api_token)
                 ->first();
 
             if (!empty($isUserExists)) {
