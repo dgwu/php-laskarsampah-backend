@@ -261,6 +261,7 @@ class UserController extends Controller
                     ->first();
                 
                 if (!empty($transactionData)) {
+                    $errorCode = 200;
                     $result['transaction_detail'] = $transactionData->detail;
                 } else {
                     $result['transaction_detail'] = null;
