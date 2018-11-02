@@ -33,4 +33,8 @@ class Admin extends Model
     public function banksampah() {
         return $this->belongsTo('App\WasteBank', 'id_bank_sampah');
     }
+
+    public function transactions() {
+        return $this->hasMany('App\Http\Models\Transaction', 'idAdmin');
+    }
 }
