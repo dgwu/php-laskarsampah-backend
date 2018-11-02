@@ -12,6 +12,7 @@ use Exception;
 use \App\Http\Models\Admin\Admin;
 use \App\Http\Models\Transaction;
 use \App\Http\Models\TransactionDetail;
+use Validator;
 
 
 class StockController extends Controller
@@ -88,7 +89,8 @@ class StockController extends Controller
         ]);
     
         if (!$validator->fails()) {
-            $isUserExists = Admin::select('id')
+            $isUserExists = Admin::with(['transactions.detail', 'transactions.user'])
+                ->select('id')
                 ->where('api_token', $request->api_token)
                 ->first();
     
@@ -98,12 +100,16 @@ class StockController extends Controller
                 return $this->reply($result, $errorCode, $errorMessage);
             }
     
-            $listTrx =Transaction::
-            leftJoin('m_users', 'm_users.id', '=', 'transaksi_h.idUser')
-                ->select('transaksi_h.idTransaksi', 'transaksi_h.tanggal', 'm_users.nama', 'm_users.email', 'm_users.telepon', 'transaksi_h.grandTotal', 'transaksi_h.status')
-                ->where('transaksi_h.idAdmin', $isUserExists["id"])
-                ->whereBetween('tanggal', [$request->start_date, $request->end_date])
-                ->get();
+//            $listTrx =Transaction::
+//            leftJoin('m_users', 'm_users.id', '=', 'transaksi_h.idUser')
+//                ->select('transaksi_h.idTransaksi', 'transaksi_h.tanggal', 'm_users.nama', 'm_users.email', 'm_users.telepon', 'transaksi_h.grandTotal', 'transaksi_h.status')
+//                ->where('transaksi_h.idAdmin', $isUserExists["id"])
+//                ->whereBetween('tanggal', [$request->start_date, $request->end_date])
+//                ->get();
+
+            $listTrx = $isUserExists->transactions;
+//                ->whereBetween('tanggal', [$request->start_date, $request->end_date]);
+//                ->get();
     
     
             $errorCode = 200;

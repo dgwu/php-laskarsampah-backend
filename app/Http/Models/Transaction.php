@@ -15,7 +15,7 @@ class Transaction extends Model
     protected $primaryKey = "idTransaksi";
 
     public function user() {
-        return $this->belongsTo('App\User');
+        return $this->belongsTo('App\User', 'idUser');
     }
 
     public function admin() {
