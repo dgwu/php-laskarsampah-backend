@@ -113,7 +113,7 @@ class StockController extends Controller
     
     
             $errorCode = 200;
-            $result = $listTrx;
+            $result['transactions'] = $listTrx;
             $errorMessage = 'SUCCESS';
         }
     

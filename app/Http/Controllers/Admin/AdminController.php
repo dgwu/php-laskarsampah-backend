@@ -49,9 +49,9 @@ class AdminController extends Controller
         $result = null;
         $errorMessage = '';
 
-        if (!empty($request->email)) {
+        if (!empty($request->telepon)) {
             $isUserExists = User::select('id', 'nama', 'telepon', 'alamat')
-                ->where('email', $request->email)
+                ->where('telepon', $request->telepon)
                 ->first();
 
             if (!empty($isUserExists)) {
