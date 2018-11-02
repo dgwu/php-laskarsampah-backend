@@ -44,7 +44,7 @@ class UserController extends Controller
         $errorMessage = '';
 
         if (!empty($request->api_token)) {
-            $isUserExists = User::select('id', 'nama', 'alamat', 'email', 'status', \DB::raw('CONCAT(""", telepon, """) as telepon'), 'api_token')
+            $isUserExists = User::select('id', 'nama', 'alamat', 'email', 'status', \DB::raw('CONCAT("\"",telepon,"\"") as telepon'), 'api_token')
                 ->where('api_token', $request->api_token)
                 ->first();
 
@@ -70,7 +70,7 @@ class UserController extends Controller
 
         if (!empty($request->id)) {
             $bankS = WasteBank::select('id', 'namaBank', 'alamat', 'longitude', 'latitude', 'namaAdmin','status',
-                \DB::raw('CONCAT(""", telepon, """) as telepon'), \DB::raw('
+                \DB::raw('CONCAT("\"",telepon,"\"") as telepon'), \DB::raw('
                 (
                    6371 *
                    acos(cos(radians('.($request->latitude ?? 0).')) * 
