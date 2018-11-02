@@ -13,4 +13,16 @@ class Transaction extends Model
     protected $table = "transaksi_h";
     
     protected $primaryKey = "idTransaksi";
+
+    public function user() {
+        return $this->belongsTo('App\User');
+    }
+
+    public function admin() {
+        return $this->belongsTo('App\Http\Models\Admin\Admin', 'idAdmin');
+    }
+
+    public function detail() {
+        return $this->hasMany('App\Http\Models\TransactionDetail', 'trans_id');
+    }
 }

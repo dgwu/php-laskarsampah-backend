@@ -8,6 +8,7 @@ use \App\WasteBank;
 use \App\News;
 use Illuminate\Support\Facades\Hash;
 use Validator;
+use App\Http\Models\Transaction;
 
 class UserController extends Controller
 {
@@ -210,6 +211,66 @@ class UserController extends Controller
             }
         } else {
             $errorMessage = $validator->errors()->first();
+        }
+
+        return $this->reply($result, $errorCode, $errorMessage);
+    }
+
+    public function getTransactionHistory(Request $request) {
+        $errorCode = 403;
+        $result = null;
+        $errorMessage = '';
+
+        if (!empty($request->api_token)) {
+            $userData = User::where('api_token', $request->api_token)
+                ->first();
+
+            if (!empty($userData)) {
+                $errorCode = 200;
+
+                $transactionData = \DB::table('transaksi_h as tx')
+                    ->select('tx.*', 'namaBank')
+                    ->join('m_users_admin as ad', 'ad.id', 'tx.idAdmin')
+                    ->join('m_bankSampah as bs', 'bs.id', 'ad.id_bank_sampah')
+                    ->where('tx.idUser', $userData->id)
+                    ->get();
+
+                $result['transactions'] = $transactionData;
+            } else {
+                $errorMessage = "Unauthorized access.";
+            }
+        } else {
+            $errorMessage = "Unauthorized access.";
+        }
+
+        return $this->reply($result, $errorCode, $errorMessage);
+    }
+
+    public function getTransactionDetail(Request $request) {
+        $errorCode = 403;
+        $result = null;
+        $errorMessage = '';
+
+        if (!empty($request->api_token)) {
+            $userData = User::where('api_token', $request->api_token)
+                ->first();
+
+            if (!empty($userData)) {
+                $transactionData = Transaction::where('idTransaksi', $request->transaction_id)
+                    ->where('idUser', $userData->id)
+                    ->first();
+                
+                if (!empty($transactionData)) {
+                    $result['transaction_detail'] = $transactionData->detail;
+                } else {
+                    $result['transaction_detail'] = null;
+                    $errorMessage = "Transaction not found.";
+                }
+            } else {
+                $errorMessage = "Unauthorized access.";
+            }
+        } else {
+            $errorMessage = "Unauthorized access.";
         }
 
         return $this->reply($result, $errorCode, $errorMessage);

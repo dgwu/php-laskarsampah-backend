@@ -30,5 +30,7 @@ class Admin extends Model
         'password',
     ];
 
-    
+    public function banksampah() {
+        return $this->belongsTo('App\WasteBank', 'id_bank_sampah');
+    }
 }

@@ -24,6 +24,8 @@ $router->post('/getWasteBankBy','UserController@getWasteBankBy');
 $router->post('/getNews','UserController@getNews');
 $router->post('/getNewsBy','UserController@getNewsBy');
 $router->get('/pricelist', 'WasteController@pricelist');
+$router->post('/gettransactions', 'UserController@getTransactionHistory');
+$router->post('/gettransactiondetail', 'UserController@getTransactionDetail');
 
 
 //admin
