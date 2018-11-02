@@ -138,6 +138,7 @@ class UserController extends Controller
         $errorMessage = '';
 
         $newslist = News:: select('id', 'judul', 'tanggal', 'content', 'url', 'like','status','createBy')
+                ->orderBy('id')
                 ->get();
     
         if ($newslist->isNotEmpty()) {
