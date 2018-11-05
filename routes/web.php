@@ -34,4 +34,4 @@ $router->post('/admin/stock/input', 'Admin\StockController@inputStock');
 $router->post('/admin/history', 'Admin\StockController@getAdminHistory');
 $router->post('/admin/history/detail', 'Admin\StockController@getTransactionDetail');
 $router->post('/admin/profile', 'Admin\AdminController@getProfile');
-$router->post('/admin/checkcustomer', 'Admin\TransactionController@checkCustomerQR');
+$router->post('/admin/checkcustomer', 'Admin\AdminController@checkCustomerQR');

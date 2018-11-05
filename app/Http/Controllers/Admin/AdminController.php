@@ -7,6 +7,7 @@ use \App\Http\Models\Admin\Admin;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use App\Http\Controllers\Controller;
+use App\User;
 use Log;
 
 class AdminController extends Controller
