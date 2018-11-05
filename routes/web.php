@@ -28,6 +28,7 @@ $router->post('/gettransactions', 'UserController@getTransactionHistory');
 $router->post('/gettransactiondetail', 'UserController@getTransactionDetail');
 
 
+$router->get('/itemlist', 'Admin\StockController@getItem');
 //admin
 $router->post('/admin/login', 'Admin\AdminController@login');
 $router->post('/admin/stock/input', 'Admin\StockController@inputStock');

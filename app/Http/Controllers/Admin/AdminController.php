@@ -3,23 +3,35 @@
 namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
-use \App\Http\Models\Admin\Admin;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use App\Http\Controllers\Controller;
 use App\User;
 use Log;
+use Validator;
+
+use \App\Http\Models\Admin\Admin;
 
 class AdminController extends Controller
 {
 
     public function login(Request $request) {
         $errorCode = 403;
-        $result = null;
         $errorMessage = '';
+        $result = null;
 
         Log::info("phone == ".$request->phone);
         
+        $validator = Validator::make($request->all(), [
+            'phone' => 'required|string',
+            'password'=> 'required|string'
+        ]);
+
+        if ($validator->fails()) {
+            $errorMessage = 'Parameter tidak valid';
+            return $this->reply($result, $errorCode, $errorMessage);
+        }
+
         $user = $this->checkUser($request->phone);
 
         if(empty($user)) {

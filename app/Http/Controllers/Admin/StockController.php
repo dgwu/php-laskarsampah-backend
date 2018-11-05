@@ -8,11 +8,12 @@ use Illuminate\Support\Str;
 use App\Http\Controllers\Controller;
 use Log;
 use Exception;
+use Validator;
 
 use \App\Http\Models\Admin\Admin;
 use \App\Http\Models\Transaction;
 use \App\Http\Models\TransactionDetail;
-use Validator;
+use \App\Http\Models\PriceListItem;
 
 
 class StockController extends Controller
@@ -21,10 +22,20 @@ class StockController extends Controller
     public function inputStock(Request $request) {
         $errorCode = 403;
         $result = null;
-        $errorMessage = '';
+        $errorMessage = 'Parameter tidak valid';
 
         // Log::info($request->items);
-        
+        $validator = Validator::make($request->all(), [
+            'userId' => 'required',
+            'userAdmin'=> 'required',
+            'totalPoint'=> 'required',
+            'items'=> 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return $this->reply($result, $errorCode, $errorMessage);
+        }
+
         $transaction = $this->getDataTransaction($request);
 
         try {
@@ -37,7 +48,9 @@ class StockController extends Controller
             Log::info("ID Transaksi = ".$transaction->idTransaksi);
             
             $this->saveDetail($request->items, $transaction->idTransaksi);
+            // $this->saveDetail($request->items, 1);
             $errorCode = 200;
+            $errorMessage = '';
             return $this->reply($result, $errorCode, $errorMessage);
             
         }catch (\Exception $e) {
@@ -57,7 +70,10 @@ class StockController extends Controller
     }
 
     private function saveDetail($items, $transId) {
-        foreach($items as $item) {
+        Log::info(" data = ".$items);
+        $dataItems = json_decode($items, true);
+        foreach($dataItems as $item) {
+            // Log::info("item name = ".$item['itemName']);
             $this->saveDataDetail($item, $transId);
         }
     }
@@ -144,5 +160,9 @@ class StockController extends Controller
         }
 
         return $this->reply($result, $errorCode, $errorMessage);
+    }
+
+    public function getItem() {
+        return json_encode(PriceListItem::select('id', 'item_name', 'item_poin', 'item_price')->get(), JSON_NUMERIC_CHECK);
     }
 }
