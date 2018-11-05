@@ -163,6 +163,6 @@ class StockController extends Controller
     }
 
     public function getItem() {
-        return PriceListItem::select('id', 'item_name', 'item_poin', 'item_price')->get();
+        return json_encode(PriceListItem::select('id', 'item_name', 'item_poin', 'item_price')->get(), JSON_NUMERIC_CHECK);
     }
 }
